@@ -1,6 +1,4 @@
-# Never bake secrets into the image - inject via ECS task definition env vars
-.env
-.env.*
+
 !.env.example
 
 # Dev noise
