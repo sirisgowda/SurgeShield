@@ -1,15 +1,43 @@
-const BASE = import.meta.env.VITE_API_URL;
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-export function getToken() { return localStorage.getItem('token'); }
-export function setToken(t) { localStorage.setItem('token', t); }
-export function clearToken() { localStorage.removeItem('token'); }
+export function getToken() { 
+  return localStorage.getItem('token'); 
+}
+
+export function setToken(t) { 
+  localStorage.setItem('token', t); 
+}
+
+export function clearToken() { 
+  localStorage.removeItem('token'); 
+  localStorage.removeItem('user');
+}
+
+export function getStoredUser() {
+  const u = localStorage.getItem('user');
+  if (u) {
+    try { return JSON.parse(u); } catch {}
+  }
+  // Fallback to decoding JWT payload if stored
+  const token = getToken();
+  if (token) {
+    try {
+      const parts = token.split('.');
+      if (parts.length === 3) {
+        const payload = JSON.parse(atob(parts[1]));
+        return { id: payload.sub, email: payload.email, role: payload.role };
+      }
+    } catch {}
+  }
+  return null;
+}
+
+export function setStoredUser(user) {
+  localStorage.setItem('user', JSON.stringify(user));
+}
 
 /**
- * Single choke point for every network call the app makes.
- * - attaches the bearer token when we have one
- * - bounces to /login on 401 (expired/invalid token)
- * - normalizes both HTTP errors and network failures into Error(message)
- *   so every screen can render `err.message` directly, no special-casing.
+ * Single choke point for network calls across the app
  */
 export async function api(path, { method = 'GET', body, headers = {} } = {}) {
   let res;
@@ -24,20 +52,21 @@ export async function api(path, { method = 'GET', body, headers = {} } = {}) {
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
   } catch {
-    // fetch itself threw: server down, DNS failure, offline, CORS block, etc.
-    throw new Error("Can't reach the server. Check your connection and try again.");
+    throw new Error("Can't reach the server. Make sure the API is running at " + BASE);
   }
 
   if (res.status === 401) {
     clearToken();
-    if (location.pathname !== '/login') location.href = '/login';
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login';
+    }
     throw new Error('Session expired. Please log in again.');
   }
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const err = new Error(data.message || data.error || `Something went wrong (HTTP ${res.status}).`);
-    if (Array.isArray(data.problems)) err.problems = data.problems; // field-level validation errors
+    if (Array.isArray(data.problems)) err.problems = data.problems;
     err.code = data.error;
     throw err;
   }

@@ -1,26 +1,44 @@
-import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../.env'), override: true });
+
 import express from 'express';
 import cors from 'cors';
 import authRouter from './routes/auth.js';
 import eventsRouter from './routes/events.js';
+import registerRouter from './routes/register.js';
+import { db } from './lib/db.js';
 
 const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
+app.get('/healthz', (_req, res) => res.json({ ok: true }));
+app.get('/readyz', async (_req, res) => {
+  try {
+    await db.query('SELECT 1');
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(503).json({ ok: false, error: e.message });
+  }
+});
 
 app.use('/api/auth', authRouter);
 app.use('/api/events', eventsRouter);
+app.use('/api', registerRouter);
 
 app.use((req, res) => res.status(404).json({ error: 'NOT_FOUND' }));
 
-// Central error handler: every route's `next(e)` lands here, so we never
-// leak a stack trace to the client and never forget a try/catch's failure path.
+// Central error handler: every route's `next(e)` lands here
 app.use((err, _req, res, _next) => {
   console.error(err);
-  res.status(500).json({ error: 'SERVER_ERROR', message: 'Something went wrong.' });
+  res.status(500).json({ error: 'SERVER_ERROR', message: err.message || 'Something went wrong.' });
 });
 
 const port = process.env.PORT || 8080;

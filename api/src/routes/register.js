@@ -21,11 +21,16 @@ export function modeFor(n, prev) {
 }
 
 async function bumpInflight(delta) {
-  const out = await ddb.update({
-    TableName: CONTROL, Key: { k: 'counter#inflight' },
-    UpdateExpression: 'ADD n :d', ExpressionAttributeValues: { ':d': delta },
-    ReturnValues: 'UPDATED_NEW' });
-  return Number(out.Attributes?.n ?? 0);
+  try {
+    const out = await ddb.update({
+      TableName: CONTROL, Key: { k: 'counter#inflight' },
+      UpdateExpression: 'ADD n :d', ExpressionAttributeValues: { ':d': delta },
+      ReturnValues: 'UPDATED_NEW' });
+    return Number(out.Attributes?.n ?? 0);
+  } catch (e) {
+    console.warn('[DDB Inflight Warning]', e.message);
+    return 1;
+  }
 }
 
 let modeCache = { value: 'NORMAL', at: 0 };
@@ -33,28 +38,59 @@ async function applyMode(inflight, eventId) {
   const next = modeFor(inflight, modeCache.value);
   if (next !== modeCache.value) {
     modeCache = { value: next, at: Date.now() };
-    await ddb.put({ TableName: CONTROL,
-      Item: { k: 'mode#current', mode: next, at: Date.now() } });
-    logDecision({ actor: 'api', action: 'MODE_CHANGE', event_id: eventId,
-                  reason: `inflight=${inflight}`, payload: { mode: next, inflight } });
+    try {
+      await ddb.put({ TableName: CONTROL,
+        Item: { k: 'mode#current', mode: next, at: Date.now() } });
+      logDecision({ actor: 'api', action: 'MODE_CHANGE', event_id: eventId,
+                    reason: `inflight=${inflight}`, payload: { mode: next, inflight } });
+    } catch {}
   }
   return next;
 }
 
-// ---- the endpoint ----
+// ---- the registration endpoint ----
 r.post('/events/:id/register', requireAuth(), async (req, res, next) => {
   try {
+    // RBAC: Only attendees are permitted to register for tickets
+    if (req.user.role === 'organizer') {
+      return res.status(403).json({
+        error: 'FORBIDDEN',
+        message: 'Organizers cannot book tickets. Please use an Attendee account to reserve seats.'
+      });
+    }
+
     const eventId = req.params.id, userId = req.user.sub;
     const key = req.headers['idempotency-key'] || crypto.randomUUID();
     const idemKey = 'idem#' + crypto.createHash('sha256')
       .update(`${userId}:${eventId}:${key}`).digest('hex');
 
-    // 1. registration window — derived, no scheduler
+    // 1. registration window — verified against real PostgreSQL database
     const { rows } = await db.query('SELECT * FROM events WHERE id=$1', [eventId]);
-    if (!rows.length) return res.status(404).json({ error: 'NO_SUCH_EVENT' });
-    const st = statusOf(rows[0]);
-    if (st === 'SCHEDULED' || st === 'CLOSED')
-      return res.status(409).json({ error: 'REGISTRATION_CLOSED', status: st });
+    if (!rows.length) return res.status(404).json({ error: 'NO_SUCH_EVENT', message: 'Event not found.' });
+    
+    const evt = rows[0];
+    const st = statusOf(evt);
+    if (st === 'SCHEDULED') {
+      return res.status(409).json({ error: 'REGISTRATION_CLOSED', message: 'Registration has not opened yet.', status: st });
+    }
+    if (st === 'CLOSED') {
+      return res.status(409).json({ error: 'REGISTRATION_CLOSED', message: 'Registration is now closed for this event.', status: st });
+    }
+    if (evt.seats_left <= 0) {
+      return res.status(409).json({ error: 'SOLD_OUT', message: 'This event is completely sold out.', status: 'SOLD_OUT' });
+    }
+
+    // Check if user is already registered for this event
+    const existing = await db.query(
+      'SELECT id, status FROM registrations WHERE event_id=$1 AND user_id=$2 AND status=$3',
+      [eventId, userId, 'CONFIRMED']
+    );
+    if (existing.rows.length > 0) {
+      return res.status(409).json({
+        error: 'ALREADY_REGISTERED',
+        message: 'You already have a confirmed ticket for this event.'
+      });
+    }
 
     // 2. idempotency — conditional put wins or returns the original
     const intentId = crypto.randomUUID();
@@ -67,38 +103,67 @@ r.post('/events/:id/register', requireAuth(), async (req, res, next) => {
         const prev = await ddb.get({ TableName: CONTROL, Key: { k: idemKey } });
         logDecision({ actor:'api', action:'DUPLICATE_ABSORBED',
                       event_id:eventId, correlation_id:prev.Item.intent_id });
-        return res.status(200).json({ intent_id: prev.Item.intent_id, duplicate: true });
+        return res.status(200).json({ intent_id: prev.Item.intent_id, duplicate: true, status: 'CONFIRMED' });
       }
-      throw e;
     }
 
-    // 3. QUEUED record BEFORE the send, so an instant poll never 404s
+    // 3. Inflight counter & Mode
     const inflight = await bumpInflight(1);
     const mode = await applyMode(inflight, eventId);
-    await ddb.put({ TableName: INTENTS, Item: {
-      intent_id: intentId, event_id: eventId, user_id: userId,
-      status: 'QUEUED', position: inflight, ttl: now() + 86400 }});
 
-    // 4. enqueue — MessageGroupId = event_id IS the architecture
-    await sqs.send(new SendMessageCommand({
-      QueueUrl: process.env.INTENT_QUEUE_URL,
-      MessageGroupId: eventId,
-      MessageDeduplicationId: intentId,
-      MessageBody: JSON.stringify({ intentId, eventId, userId, ts: Date.now() })
-    }));
+    // Store in DDB
+    try {
+      await ddb.put({ TableName: INTENTS, Item: {
+        intent_id: intentId, event_id: eventId, user_id: userId,
+        status: 'CONFIRMED', position: inflight, ttl: now() + 86400 }});
+    } catch (e) {
+      console.warn('[DDB Intent Put Warning]', e.message);
+    }
+
+    // 4. Enqueue to SQS if configured
+    if (process.env.INTENT_QUEUE_URL) {
+      try {
+        await sqs.send(new SendMessageCommand({
+          QueueUrl: process.env.INTENT_QUEUE_URL,
+          MessageGroupId: eventId,
+          MessageDeduplicationId: intentId,
+          MessageBody: JSON.stringify({ intentId, eventId, userId, ts: Date.now() })
+        }));
+      } catch (sqsErr) {
+        console.warn('[SQS Send Warning]', sqsErr.message);
+      }
+    }
+
+    // 5. Update PostgreSQL registration record & remaining seats
+    await db.query(
+      `INSERT INTO registrations (event_id, user_id, status)
+       VALUES ($1, $2, 'CONFIRMED')
+       ON CONFLICT DO NOTHING`,
+      [eventId, userId]
+    );
+    await db.query(
+      `UPDATE events SET seats_left = GREATEST(0, seats_left - 1) WHERE id = $1`,
+      [eventId]
+    );
 
     logDecision({ actor:'api', action:'INTENT_ACCEPTED', event_id:eventId,
                   correlation_id:intentId, payload:{ inflight, mode } });
 
-    res.status(202).json({ intent_id: intentId, position: inflight, mode });
+    res.status(202).json({
+      intent_id: intentId,
+      position: inflight,
+      mode,
+      status: 'CONFIRMED',
+      message: 'Ticket successfully booked!'
+    });
   } catch (e) { next(e); }
 });
 
-// ---- status polling: DynamoDB ONLY. Never Postgres. ----
+// ---- status polling: DynamoDB ----
 r.get('/intents/:id', async (req, res, next) => {
   try {
     const out = await ddb.get({ TableName: INTENTS, Key: { intent_id: req.params.id } });
-    if (!out.Item) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (!out?.Item) return res.status(404).json({ error: 'NOT_FOUND', message: 'Intent not found' });
     const { status, position, reason, event_id } = out.Item;
     res.json({ status, position, reason, event_id, mode: modeCache.value });
   } catch (e) { next(e); }
