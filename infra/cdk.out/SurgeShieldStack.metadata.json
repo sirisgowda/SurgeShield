@@ -1,0 +1,520 @@
+{
+  "/SurgeShieldStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/IntentsTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "IntentsTableBE3A67FE"
+      }
+    }
+  ],
+  "/SurgeShieldStack/ControlTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "ControlTableF3E1E223"
+      }
+    }
+  ],
+  "/SurgeShieldStack/ApiAppRunnerService": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiAppRunnerService"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:128:30)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/DATABASE_URL": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DATABASEURL"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:158:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/INTENT_QUEUE_URL": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "INTENTQUEUEURL"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:163:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/NOTIFY_QUEUE_URL": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NOTIFYQUEUEURL"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:168:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/DDB_INTENTS": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DDBINTENTS"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:173:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/DDB_CONTROL": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DDBCONTROL"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:178:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/AWS_REGION": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AWSREGION"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:183:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/ECR_REPOSITORY_URI": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ECRREPOSITORYURI"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:188:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/API_URL": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "APIURL"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:193:5)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/SurgeShieldStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpc28594B14"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:16:17)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/IGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcIGW97AA630F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:16:17)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/VPCGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcVPCGWC2132B00"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:16:17)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/DBSecurityGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DBSecurityGroupE3B245A3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:29:29)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldDB/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldDB00FDCA62"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:41:24)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/IntentsTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IntentsTableBE3A67FE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:61:26)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/ControlTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ControlTableF3E1E223"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:69:26)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/IntentsDLQ/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IntentsDLQ7E7348B2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:78:24)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/IntentsQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IntentsQueue161610B1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:84:26)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/NotifyDLQ/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotifyDLQBCF14522"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:95:23)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/NotifyQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotifyQueueB34E1758"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:100:25)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/ApiRepository/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiRepositoryB8378B43"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Repository2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:111:27)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/AppRunnerECRAccessRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AppRunnerECRAccessRoleBA129412"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:118:33)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet1Subnet94B49C81"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet1RouteTable77C4ABEE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet1RouteTableAssociation2D677416"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet1DefaultRouteC29CB584"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:208 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:16:17)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet2Subnet643CF18A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet2RouteTable8F327803"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet2RouteTableAssociation22F5F2B6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldVpcPublicSubnet2DefaultRoute91C0D79B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...D:\\WorkDay Project\\SurgeShield\\infra\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:208 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:16:17)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/SurgeShieldStack/SurgeShieldDB/SubnetGroup/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SurgeShieldDBSubnetGroupDF3852B2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new SurgeShieldStack (D:\\WorkDay Project\\SurgeShield\\infra\\lib\\surgeshield-stack.ts:41:24)",
+        "<anonymous> (D:\\WorkDay Project\\SurgeShield\\infra\\bin\\infra.ts:8:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ]
+}

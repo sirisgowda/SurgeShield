@@ -1,0 +1,34 @@
+-- Initial Database Schema for SurgeShield
+
+DROP TABLE IF EXISTS events CASCADE;
+
+CREATE TABLE events (
+  id VARCHAR(64) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL DEFAULT 'Event',
+  total_seats INT NOT NULL DEFAULT 1,
+  seats_left INT NOT NULL DEFAULT 1,
+  status VARCHAR(32) NOT NULL DEFAULT 'OPEN',
+  start_time TIMESTAMP WITH TIME ZONE,
+  end_time TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS registrations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id VARCHAR(64) NOT NULL,
+  user_id VARCHAR(64) NOT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'CONFIRMED',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_event_user UNIQUE(event_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS decision_log (
+  id SERIAL PRIMARY KEY,
+  event_id VARCHAR(64),
+  correlation_id VARCHAR(128),
+  actor VARCHAR(64) NOT NULL,
+  action VARCHAR(64) NOT NULL,
+  reason TEXT,
+  payload JSONB,
+  ts TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

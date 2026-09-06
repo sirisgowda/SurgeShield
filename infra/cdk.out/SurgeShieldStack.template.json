@@ -1,0 +1,738 @@
+{
+ "Resources": {
+  "SurgeShieldVpc28594B14": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "SurgeShieldStack/SurgeShieldVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/Resource"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet1Subnet94B49C81": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-south-1a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SurgeShieldVpc28594B14"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/Subnet"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet1RouteTable77C4ABEE": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SurgeShieldVpc28594B14"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/RouteTable"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet1RouteTableAssociation2D677416": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "SurgeShieldVpcPublicSubnet1RouteTable77C4ABEE"
+    },
+    "SubnetId": {
+     "Ref": "SurgeShieldVpcPublicSubnet1Subnet94B49C81"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet1DefaultRouteC29CB584": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "SurgeShieldVpcIGW97AA630F"
+    },
+    "RouteTableId": {
+     "Ref": "SurgeShieldVpcPublicSubnet1RouteTable77C4ABEE"
+    }
+   },
+   "DependsOn": [
+    "SurgeShieldVpcVPCGWC2132B00"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet2Subnet643CF18A": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-south-1b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SurgeShieldVpc28594B14"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/Subnet"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet2RouteTable8F327803": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SurgeShieldVpc28594B14"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/RouteTable"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet2RouteTableAssociation22F5F2B6": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "SurgeShieldVpcPublicSubnet2RouteTable8F327803"
+    },
+    "SubnetId": {
+     "Ref": "SurgeShieldVpcPublicSubnet2Subnet643CF18A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "SurgeShieldVpcPublicSubnet2DefaultRoute91C0D79B": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "SurgeShieldVpcIGW97AA630F"
+    },
+    "RouteTableId": {
+     "Ref": "SurgeShieldVpcPublicSubnet2RouteTable8F327803"
+    }
+   },
+   "DependsOn": [
+    "SurgeShieldVpcVPCGWC2132B00"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "SurgeShieldVpcIGW97AA630F": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "SurgeShieldStack/SurgeShieldVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/IGW"
+   }
+  },
+  "SurgeShieldVpcVPCGWC2132B00": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "SurgeShieldVpcIGW97AA630F"
+    },
+    "VpcId": {
+     "Ref": "SurgeShieldVpc28594B14"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldVpc/VPCGW"
+   }
+  },
+  "DBSecurityGroupE3B245A3": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Allow PostgreSQL access for SurgeShield DB",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow public PostgreSQL access (hackathon trade-off)",
+      "FromPort": 5432,
+      "IpProtocol": "tcp",
+      "ToPort": 5432
+     }
+    ],
+    "VpcId": {
+     "Ref": "SurgeShieldVpc28594B14"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/DBSecurityGroup/Resource"
+   }
+  },
+  "SurgeShieldDBSubnetGroupDF3852B2": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for SurgeShieldDB database",
+    "SubnetIds": [
+     {
+      "Ref": "SurgeShieldVpcPublicSubnet1Subnet94B49C81"
+     },
+     {
+      "Ref": "SurgeShieldVpcPublicSubnet2Subnet643CF18A"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldDB/SubnetGroup/Default"
+   }
+  },
+  "SurgeShieldDB00FDCA62": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "BackupRetentionPeriod": 0,
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t4g.micro",
+    "DBName": "surgeshield",
+    "DBSubnetGroupName": {
+     "Ref": "SurgeShieldDBSubnetGroupDF3852B2"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "16",
+    "MasterUserPassword": "CHANGE_ME_LongPassword123",
+    "MasterUsername": "surgeshield",
+    "PubliclyAccessible": true,
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "DBSecurityGroupE3B245A3",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/SurgeShieldDB/Resource"
+   }
+  },
+  "IntentsTableBE3A67FE": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "intent_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "intent_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "ss_intents",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/IntentsTable/Resource"
+   }
+  },
+  "ControlTableF3E1E223": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "k",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "k",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "ss_control",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/ControlTable/Resource"
+   }
+  },
+  "IntentsDLQ7E7348B2": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "FifoQueue": true,
+    "QueueName": "intents-dlq.fifo"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/IntentsDLQ/Resource"
+   }
+  },
+  "IntentsQueue161610B1": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "FifoQueue": true,
+    "QueueName": "intents.fifo",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "IntentsDLQ7E7348B2",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 60
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/IntentsQueue/Resource"
+   }
+  },
+  "NotifyDLQBCF14522": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "QueueName": "notify-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/NotifyDLQ/Resource"
+   }
+  },
+  "NotifyQueueB34E1758": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "QueueName": "notify",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "NotifyDLQBCF14522",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 60
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/NotifyQueue/Resource"
+   }
+  },
+  "ApiRepositoryB8378B43": {
+   "Type": "AWS::ECR::Repository",
+   "Properties": {
+    "EmptyOnDelete": true,
+    "RepositoryName": "surgeshield-api"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/ApiRepository/Resource"
+   }
+  },
+  "AppRunnerECRAccessRoleBA129412": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "build.apprunner.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/AppRunnerECRAccessRole/Resource"
+   }
+  },
+  "ApiAppRunnerService": {
+   "Type": "AWS::AppRunner::Service",
+   "Properties": {
+    "HealthCheckConfiguration": {
+     "Path": "/healthz",
+     "Protocol": "HTTP"
+    },
+    "ServiceName": "surgeshield-api-service",
+    "SourceConfiguration": {
+     "AuthenticationConfiguration": {
+      "AccessRoleArn": {
+       "Fn::GetAtt": [
+        "AppRunnerECRAccessRoleBA129412",
+        "Arn"
+       ]
+      }
+     },
+     "ImageRepository": {
+      "ImageConfiguration": {
+       "Port": "8080",
+       "RuntimeEnvironmentVariables": [
+        {
+         "Name": "DATABASE_URL",
+         "Value": {
+          "Fn::Join": [
+           "",
+           [
+            "postgresql://surgeshield:CHANGE_ME_LongPassword123@",
+            {
+             "Fn::GetAtt": [
+              "SurgeShieldDB00FDCA62",
+              "Endpoint.Address"
+             ]
+            },
+            ":5432/surgeshield"
+           ]
+          ]
+         }
+        },
+        {
+         "Name": "INTENT_QUEUE_URL",
+         "Value": {
+          "Ref": "IntentsQueue161610B1"
+         }
+        },
+        {
+         "Name": "NOTIFY_QUEUE_URL",
+         "Value": {
+          "Ref": "NotifyQueueB34E1758"
+         }
+        },
+        {
+         "Name": "DDB_INTENTS",
+         "Value": {
+          "Ref": "IntentsTableBE3A67FE"
+         }
+        },
+        {
+         "Name": "DDB_CONTROL",
+         "Value": {
+          "Ref": "ControlTableF3E1E223"
+         }
+        },
+        {
+         "Name": "AWS_REGION",
+         "Value": "ap-south-1"
+        },
+        {
+         "Name": "JWT_SECRET",
+         "Value": "surgeshield_jwt_secret_670f2c41b93dae58"
+        }
+       ]
+      },
+      "ImageIdentifier": {
+       "Fn::Join": [
+        "",
+        [
+         {
+          "Fn::Select": [
+           4,
+           {
+            "Fn::Split": [
+             ":",
+             {
+              "Fn::GetAtt": [
+               "ApiRepositoryB8378B43",
+               "Arn"
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         ".dkr.ecr.",
+         {
+          "Fn::Select": [
+           3,
+           {
+            "Fn::Split": [
+             ":",
+             {
+              "Fn::GetAtt": [
+               "ApiRepositoryB8378B43",
+               "Arn"
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         ".",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/",
+         {
+          "Ref": "ApiRepositoryB8378B43"
+         },
+         ":latest"
+        ]
+       ]
+      },
+      "ImageRepositoryType": "ECR"
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/ApiAppRunnerService"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WPQU8CMRCFfwv3MpI1Gq+ICeEkLoarme2OscBO184UQpr+d7MFWRNP8+bLa9+bCqrHJ5hN8CRT2+6nB9dA2ijavcGTfCSyFaRtb83ik7frhVnH5uDsJjZMOrBR1T4qvWNzoJGPbC7irUN1nm/mQaxYKTDpEpVOeL7GXLe5KtqvjljNhmwMTs/L4GNfAv6CbEIrkF5QsUGhFYsiWzKXFrc3L8//wK81m/bM2Pm2gXQ7oohs5FsgvUWKBRaRDdkAqabei1MfSvFxy8ZhB6n2l3+GmQ32fYjMFKDUD0c3xNYkPgZbfK9R+6jZsG8JdnJ3rO7hAWaTnTg3DZHVdQT1Zf4AfBTqXrkBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "SurgeShieldStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DATABASEURL": {
+   "Description": "PostgreSQL Database Connection URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "postgresql://surgeshield:CHANGE_ME_LongPassword123@",
+      {
+       "Fn::GetAtt": [
+        "SurgeShieldDB00FDCA62",
+        "Endpoint.Address"
+       ]
+      },
+      ":5432/surgeshield"
+     ]
+    ]
+   }
+  },
+  "INTENTQUEUEURL": {
+   "Description": "SQS Queue URL for Intents FIFO Queue",
+   "Value": {
+    "Ref": "IntentsQueue161610B1"
+   }
+  },
+  "NOTIFYQUEUEURL": {
+   "Description": "SQS Queue URL for Notify Queue",
+   "Value": {
+    "Ref": "NotifyQueueB34E1758"
+   }
+  },
+  "DDBINTENTS": {
+   "Description": "DynamoDB Intents Table Name",
+   "Value": {
+    "Ref": "IntentsTableBE3A67FE"
+   }
+  },
+  "DDBCONTROL": {
+   "Description": "DynamoDB Control Table Name",
+   "Value": {
+    "Ref": "ControlTableF3E1E223"
+   }
+  },
+  "AWSREGION": {
+   "Description": "AWS Region",
+   "Value": "ap-south-1"
+  },
+  "ECRREPOSITORYURI": {
+   "Description": "ECR Repository URI to push Docker image",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::Select": [
+        4,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "ApiRepositoryB8378B43",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".dkr.ecr.",
+      {
+       "Fn::Select": [
+        3,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "ApiRepositoryB8378B43",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "ApiRepositoryB8378B43"
+      }
+     ]
+    ]
+   }
+  },
+  "APIURL": {
+   "Description": "Live Public AWS App Runner API URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Fn::GetAtt": [
+        "ApiAppRunnerService",
+        "ServiceUrl"
+       ]
+      }
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
