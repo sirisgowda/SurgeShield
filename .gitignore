@@ -1,0 +1,11 @@
+
+.env
+.env.shared
+.env.local
+node_modules/
+
+.env.shared
+.env
+node_modules/
+
+env.ps1
