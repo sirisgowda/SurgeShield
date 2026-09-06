@@ -1,0 +1,21 @@
+{
+  "version": "54.0.0",
+  "files": {
+    "58375c089f0de19db5fce5f45ee9098bed0d5aa5260c1411b7b63b23fe854d03": {
+      "displayName": "SurgeShieldStack Template",
+      "source": {
+        "path": "SurgeShieldStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "094337892389-ap-south-1-6bda804b": {
+          "bucketName": "cdk-hnb659fds-assets-094337892389-ap-south-1",
+          "objectKey": "58375c089f0de19db5fce5f45ee9098bed0d5aa5260c1411b7b63b23fe854d03.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::094337892389:role/cdk-hnb659fds-file-publishing-role-094337892389-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
