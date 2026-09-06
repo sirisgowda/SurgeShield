@@ -1,0 +1,44 @@
+-- SUPERSEDED — DO NOT RUN.
+-- This dropped and recreated events + registrations. We replaced it with
+-- 005_additive.sql, which only ADDS columns, because another teammate's app
+-- creates these tables with a different shape and dropping them destroys
+-- their data. Kept for history only.
+BEGIN;
+
+DROP TABLE IF EXISTS registrations CASCADE;
+DROP TABLE IF EXISTS events        CASCADE;
+
+CREATE TABLE events (
+  id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organizer_id           UUID NOT NULL REFERENCES users(id),
+  title                  TEXT NOT NULL,
+  description            TEXT,
+  starts_at              TIMESTAMPTZ NOT NULL,
+  registration_opens_at  TIMESTAMPTZ NOT NULL,
+  registration_closes_at TIMESTAMPTZ NOT NULL,
+  capacity               INT  NOT NULL CHECK (capacity > 0),
+  seats_left             INT  NOT NULL CHECK (seats_left >= 0),
+  event_mode             TEXT NOT NULL DEFAULT 'physical',
+  venue                  TEXT,
+  join_url               TEXT,
+  created_at             TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE registrations (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id    UUID NOT NULL REFERENCES events(id),
+  user_id     UUID NOT NULL REFERENCES users(id),
+  intent_id   TEXT NOT NULL UNIQUE,
+  status      TEXT NOT NULL,
+  reason_code TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (event_id, user_id)
+);
+
+CREATE INDEX registrations_event_idx ON registrations (event_id, status);
+
+COMMIT;
+
+SELECT column_name, data_type FROM information_schema.columns
+ WHERE table_name = 'events' ORDER BY ordinal_position;
+

@@ -1,0 +1,6 @@
+{
+    "MessageGroupId":  "gate1-event",
+    "MessageBody":  "{\"eventId\":\"gate1-event\",\"userId\":\"gate1-user-1\",\"intentId\":\"e44b3d8d-d319-4c69-a4a2-e2fa4cee4b75\"}",
+    "MessageDeduplicationId":  "e44b3d8d-d319-4c69-a4a2-e2fa4cee4b75",
+    "QueueUrl":  "https://sqs.ap-south-1.amazonaws.com/094337892389/intents.fifo"
+}

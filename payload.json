@@ -1,0 +1,10 @@
+{
+    "Records":  [
+                    {
+                        "body":  "{\"eventId\":\"ddd8e7fd-06bf-4022-88ce-1e10516b34d1\",\"userId\":\"test-user\",\"intentId\":\"9b2959d2-882a-4195-8ea8-5dc6ee6e254b\"}",
+                        "attributes":  {
+                                           "MessageGroupId":  "test-group"
+                                       }
+                    }
+                ]
+}

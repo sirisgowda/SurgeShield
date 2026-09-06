@@ -9,3 +9,10 @@ node_modules/
 node_modules/
 
 env.ps1
+
+node_modules/
+
+*.zip
+payload.json
+msg.json
+out.json
