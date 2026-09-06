@@ -1,44 +1,68 @@
--- SUPERSEDED — DO NOT RUN.
+-- ============================================================================
+-- SUPERSEDED - DO NOT RUN. Kept only as a record of an approach we abandoned.
+--
+-- This file rebuilt `events` and `registrations` with UUID primary keys. It is
+-- wrong in two ways that were expensive to discover:
+--
+--   1. It opens with DROP TABLE registrations CASCADE / DROP TABLE events
+--      CASCADE. Another teammate's app owns those tables. Running this
+--      destroys their data and violates hard constraint #1 (never DROP TABLE).
+--
+--   2. Its UUID ids contradict the live schema, where events.id,
+--      registrations.event_id and registrations.user_id are all varchar(64).
+--      This exact uuid-vs-varchar mismatch, left behind in decision_log, is
+--      what broke Gate 1 (22P02 "invalid input syntax for type uuid") until
+--      006_decision_log_varchar.sql widened the column.
+--
+-- The correct approach is ADDITIVE and already applied:
+--   005_additive.sql              - adds the four columns we need
+--   006_decision_log_varchar.sql  - widens decision_log.event_id to varchar(64)
+--
+-- Every statement below is commented out, so this file is a no-op even if it
+-- is executed by accident. Do not uncomment it.
+-- ============================================================================
+
+-- SUPERSEDED - DO NOT RUN.
 -- This dropped and recreated events + registrations. We replaced it with
 -- 005_additive.sql, which only ADDS columns, because another teammate's app
 -- creates these tables with a different shape and dropping them destroys
 -- their data. Kept for history only.
-BEGIN;
+-- BEGIN;
 
-DROP TABLE IF EXISTS registrations CASCADE;
-DROP TABLE IF EXISTS events        CASCADE;
+-- DROP TABLE IF EXISTS registrations CASCADE;
+-- DROP TABLE IF EXISTS events        CASCADE;
 
-CREATE TABLE events (
-  id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  organizer_id           UUID NOT NULL REFERENCES users(id),
-  title                  TEXT NOT NULL,
-  description            TEXT,
-  starts_at              TIMESTAMPTZ NOT NULL,
-  registration_opens_at  TIMESTAMPTZ NOT NULL,
-  registration_closes_at TIMESTAMPTZ NOT NULL,
-  capacity               INT  NOT NULL CHECK (capacity > 0),
-  seats_left             INT  NOT NULL CHECK (seats_left >= 0),
-  event_mode             TEXT NOT NULL DEFAULT 'physical',
-  venue                  TEXT,
-  join_url               TEXT,
-  created_at             TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+-- CREATE TABLE events (
+--   id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   organizer_id           UUID NOT NULL REFERENCES users(id),
+--   title                  TEXT NOT NULL,
+--   description            TEXT,
+--   starts_at              TIMESTAMPTZ NOT NULL,
+--   registration_opens_at  TIMESTAMPTZ NOT NULL,
+--   registration_closes_at TIMESTAMPTZ NOT NULL,
+--   capacity               INT  NOT NULL CHECK (capacity > 0),
+--   seats_left             INT  NOT NULL CHECK (seats_left >= 0),
+--   event_mode             TEXT NOT NULL DEFAULT 'physical',
+--   venue                  TEXT,
+--   join_url               TEXT,
+--   created_at             TIMESTAMPTZ NOT NULL DEFAULT now()
+-- );
 
-CREATE TABLE registrations (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  event_id    UUID NOT NULL REFERENCES events(id),
-  user_id     UUID NOT NULL REFERENCES users(id),
-  intent_id   TEXT NOT NULL UNIQUE,
-  status      TEXT NOT NULL,
-  reason_code TEXT,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (event_id, user_id)
-);
+-- CREATE TABLE registrations (
+--   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   event_id    UUID NOT NULL REFERENCES events(id),
+--   user_id     UUID NOT NULL REFERENCES users(id),
+--   intent_id   TEXT NOT NULL UNIQUE,
+--   status      TEXT NOT NULL,
+--   reason_code TEXT,
+--   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+--   UNIQUE (event_id, user_id)
+-- );
 
-CREATE INDEX registrations_event_idx ON registrations (event_id, status);
+-- CREATE INDEX registrations_event_idx ON registrations (event_id, status);
 
-COMMIT;
+-- COMMIT;
 
-SELECT column_name, data_type FROM information_schema.columns
- WHERE table_name = 'events' ORDER BY ordinal_position;
+-- SELECT column_name, data_type FROM information_schema.columns
+--  WHERE table_name = 'events' ORDER BY ordinal_position;
 

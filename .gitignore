@@ -16,3 +16,6 @@ node_modules/
 payload.json
 msg.json
 out.json
+
+*.zip
+lambdas/**/node_modules/

@@ -62,6 +62,11 @@ export const handler = async (event) => {
 
     const { intentId, eventId, userId } = msg;
     let status, reason = null, seatsLeft = null;
+    // Did THIS message win the claim? An absorbed duplicate reports the existing
+    // row's status, which is CONFIRMED — so status alone cannot tell a new
+    // registration apart from a repeat request, and gating the notification on
+    // it emails the same user once per retry.
+    let isNewClaim = false;
 
     const client = await pool.connect();
     try {
@@ -93,6 +98,8 @@ export const handler = async (event) => {
 
         await client.query('COMMIT');
       } else {
+        isNewClaim = true;   // the INSERT returned a row: this message won the claim
+
         // ── STEP 2: ALLOCATE ───────────────────────────────────────────────
         // One guarded statement covering capacity AND the registration window.
         // Zero rows back means "no seat for you" — we then read why.
@@ -144,7 +151,10 @@ export const handler = async (event) => {
 
     await syncStatus(intentId, status, reason);
 
-    if (status === 'CONFIRMED' && process.env.NOTIFY_QUEUE_URL) {
+    // Deliberately still OUTSIDE the transaction and after syncStatus: enqueueing
+    // inside would mean a rollback after a successful SQS send, notifying someone
+    // about a seat they did not get. isNewClaim is what suppresses the duplicate.
+    if (isNewClaim && status === 'CONFIRMED' && process.env.NOTIFY_QUEUE_URL) {
       try {
         await sqs.send(new SendMessageCommand({
           QueueUrl: process.env.NOTIFY_QUEUE_URL,
