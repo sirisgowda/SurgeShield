@@ -59,8 +59,8 @@ export default function EventList() {
                   <div>
                     <p className="font-medium">{e.title}</p>
                     <p className="text-sm text-slate-500">
-                      {new Date(e.starts_at).toLocaleString()}
-                    </p>
+  {e.starts_at ? new Date(e.starts_at).toLocaleString() : 'Date TBD'}
+</p>
                   </div>
                   <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${BADGE[e.status]}`}>
                     {LABEL[e.status]}

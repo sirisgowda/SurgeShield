@@ -39,11 +39,14 @@ export default function Ops() {
     try {
       const event = await api('/api/events', { method: 'POST', body: form });
       nav(`/events/${event.id}`);
-    } catch (e) {
+        } catch (e) {
       // Server sends { error: 'VALIDATION', problems: [...] } for field-level issues,
-      // and a plain message for everything else.
+      // { error: 'FORBIDDEN' } if the account isn't an organizer, and a plain
+      // message for everything else.
       if (Array.isArray(e.problems)) setProblems(e.problems);
-      else setErr(e.message);
+      else if (e.message === 'FORBIDDEN') {
+        setErr('Only organizer accounts can create events. Your account is currently registered as an attendee.');
+      } else setErr(e.message);
     } finally {
       setBusy(false);
     }
@@ -69,12 +72,12 @@ export default function Ops() {
           rows={3}
         />
 
-        <label className="block text-sm text-slate-600">
+                <label className="block text-sm text-slate-600">
           Starts at
           <input
             className="w-full border rounded p-2 mt-1"
             type="datetime-local"
-            value={form.starts_at}
+            value={form.starts_at ? toLocalInput(form.starts_at) : ''}
             onChange={(e) => set('starts_at', new Date(e.target.value).toISOString())}
             required
           />

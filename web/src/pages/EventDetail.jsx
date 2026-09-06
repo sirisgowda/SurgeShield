@@ -59,8 +59,8 @@ export default function EventDetail() {
             <div>
               <h1 className="text-2xl font-semibold">{event.title}</h1>
               <p className="text-sm text-slate-500">
-                {new Date(event.starts_at).toLocaleString()}
-              </p>
+  {event.starts_at ? new Date(event.starts_at).toLocaleString() : 'Date TBD'}
+</p>
             </div>
 
             {event.description && <p className="text-slate-700">{event.description}</p>}

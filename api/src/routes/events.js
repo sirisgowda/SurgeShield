@@ -4,17 +4,30 @@ import { requireAuth } from '../lib/auth.js';
 
 const r = Router();
 
-// Status is DERIVED from timestamps on every read. There is no status column,
-// no cron job, no TTL to expire. That means: no drift between a stored value
-// and reality, no missed-fire if a scheduled job doesn't run, and no
-// disagreement between two clocks — "now" is computed once, at request time,
-// from the same source for every event.
+// Real events table has a text `id` column with no default — we must supply one.
+function makeEventId(title) {
+  const slug = title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  return `${slug || 'event'}-${Date.now()}`;
+}
+
+// Real AWS table columns: id, name, start_time, end_time, registration_opens_at,
+// registration_closes_at, total_seats, seats_left, status, created_at.
+// No title/capacity/organizer_id/description/venue/event_mode/join_url exist yet —
+// mapped here so the rest of the frontend (title, capacity, starts_at) keeps working
+// unchanged. Ownership (organizer_id) and extra fields are not stored for now —
+// flagged for the team to add to the real schema later.
 export function statusOf(e, now = new Date()) {
-  if (now < new Date(e.registration_opens_at)) return 'SCHEDULED';
-  if (now >= new Date(e.registration_closes_at)) return 'CLOSED';
+  if (e.registration_opens_at && now < new Date(e.registration_opens_at)) return 'SCHEDULED';
+  if (e.registration_closes_at && now >= new Date(e.registration_closes_at)) return 'CLOSED';
   return e.seats_left > 0 ? 'REGISTRATION_OPEN' : 'SOLD_OUT';
 }
-const decorate = (e) => ({ ...e, status: statusOf(e) });
+const decorate = (e) => ({
+  ...e,
+  title: e.title ?? e.name,
+  capacity: e.capacity ?? e.total_seats,
+  starts_at: e.starts_at ?? e.start_time,
+  status: e.status ?? statusOf(e),
+});
 
 r.post('/', requireAuth('organizer'), async (req, res, next) => {
   try {
@@ -28,26 +41,21 @@ r.post('/', requireAuth('organizer'), async (req, res, next) => {
     } else if (new Date(b.registration_closes_at) <= new Date(b.registration_opens_at)) {
       problems.push('Registration must close after it opens.');
     }
-    if (b.event_mode === 'virtual' && !b.join_url) problems.push('Virtual events need a join URL.');
-    if (b.event_mode !== 'virtual' && !b.venue) problems.push('Physical events need a venue.');
     if (problems.length) return res.status(400).json({ error: 'VALIDATION', problems });
 
-    const { rows } = await db.query(
-      `INSERT INTO events (organizer_id,title,description,starts_at,
-         registration_opens_at,registration_closes_at,capacity,seats_left,
-         event_mode,venue,join_url)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$7,$8,$9,$10) RETURNING *`,
+    // NOTE: description/venue/join_url/event_mode from the form aren't saved —
+    // the real events table has no columns for them yet.
+        const { rows } = await db.query(
+      `INSERT INTO events (id,name,start_time,registration_opens_at,registration_closes_at,
+         total_seats,seats_left,status)
+       VALUES ($1,$2,$3,$4,$5,$6,$6,'SCHEDULED') RETURNING *`,
       [
-        req.user.sub,
+        makeEventId(b.title),
         b.title.trim(),
-        b.description ?? null,
         b.starts_at,
         b.registration_opens_at,
         b.registration_closes_at,
         b.capacity,
-        b.event_mode ?? 'physical',
-        b.venue ?? null,
-        b.join_url ?? null,
       ],
     );
     res.status(201).json(decorate(rows[0]));
@@ -66,12 +74,12 @@ r.get('/', async (_req, res, next) => {
 });
 
 // IMPORTANT: this must stay declared before GET /:id, or Express matches
-// "me" as the :id param and this route never gets hit. Classic 20-minute bug.
+// "me" as the :id param and this route never gets hit.
 r.get('/me/registrations', requireAuth(), async (req, res, next) => {
   try {
     const { rows } = await db.query(
       `SELECT r.id,r.status,r.reason_code,r.created_at,
-              e.title,e.starts_at,e.venue,e.join_url,e.event_mode
+              e.name AS title,e.start_time AS starts_at
          FROM registrations r JOIN events e ON e.id=r.event_id
         WHERE r.user_id=$1 ORDER BY r.created_at DESC`,
       [req.user.sub],
