@@ -41,5 +41,5 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'SERVER_ERROR', message: err.message || 'Something went wrong.' });
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`API listening on :${port}`));

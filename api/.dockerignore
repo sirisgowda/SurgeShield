@@ -1,0 +1,11 @@
+# Never bake secrets into the image - inject via ECS task definition env vars
+.env
+.env.*
+!.env.example
+
+# Dev noise
+node_modules
+npm-debug.log*
+.git
+.gitignore
+*.md
