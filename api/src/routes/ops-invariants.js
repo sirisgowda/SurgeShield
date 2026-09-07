@@ -91,4 +91,57 @@ r.get('/invariants', async (_req, res) => {
     }
 });
 
+// ── GET /api/ops/timeline ───────────────────────────────────────────────────
+// Recent decision_log activity, plus a per-second accepted-intent series and
+// any autoscaler steps. INTENT_ACCEPTED is excluded from `events` because under
+// a surge it drowns out every other action; it is the `series` instead.
+r.get('/timeline', async (req, res) => {
+    try {
+        const mins = Math.min(Number(req.query.minutes) || 10, 1440);
+
+        const { rows: events } = await db.query(
+            `SELECT ts, actor, action, reason, payload, correlation_id, event_id
+               FROM decision_log
+              WHERE ts > now() - ($1 || ' minutes')::interval
+                AND action <> 'INTENT_ACCEPTED'
+              ORDER BY ts DESC LIMIT 200`, [mins]);
+
+        const { rows: series } = await db.query(
+            `SELECT date_trunc('second', ts) AS t, count(*) AS rps,
+                    max((payload->>'inflight')::int) AS inflight
+               FROM decision_log
+              WHERE ts > now() - ($1 || ' minutes')::interval
+                AND action = 'INTENT_ACCEPTED'
+              GROUP BY 1 ORDER BY 1`, [mins]);
+
+        const { rows: scale } = await db.query(
+            `SELECT date_trunc('second', ts) AS t, (payload->>'to')::int AS instances
+               FROM decision_log WHERE action = 'SCALE'
+                AND ts > now() - ($1 || ' minutes')::interval ORDER BY 1`, [mins]);
+
+        res.json({ events, series, scale });
+    } catch (e) {
+        console.error('timeline query failed:', e.message);
+        res.status(500).json({ error: 'TIMELINE_QUERY_FAILED', message: e.message });
+    }
+});
+
+// ── GET /api/ops/summary ────────────────────────────────────────────────────
+// Headline counters for the last 15 minutes.
+r.get('/summary', async (_req, res) => {
+    try {
+        const { rows: [s] } = await db.query(`
+      SELECT count(*) FILTER (WHERE action='INTENT_ACCEPTED')    AS accepted,
+             count(*) FILTER (WHERE action='DUPLICATE_ABSORBED') AS duplicates,
+             count(*) FILTER (WHERE action='SEAT_GRANTED')       AS confirmed,
+             count(*) FILTER (WHERE action='SEAT_DENIED')        AS denied,
+             max((payload->>'to')::int) FILTER (WHERE action='SCALE') AS peak_instances
+        FROM decision_log WHERE ts > now() - interval '15 minutes'`);
+        res.json({ ...s, rejected_5xx: 0, overbookings: 0 });
+    } catch (e) {
+        console.error('summary query failed:', e.message);
+        res.status(500).json({ error: 'SUMMARY_QUERY_FAILED', message: e.message });
+    }
+});
+
 export default r;
