@@ -7,6 +7,7 @@ import EventList from './pages/EventList';
 import EventDetail from './pages/EventDetail';
 import MyRegistrations from './pages/MyRegistrations';
 import Ops from './pages/Ops';
+import OpsDashboard from './pages/OpsDashboard';
 
 export default function App() {
   return (
@@ -52,6 +53,16 @@ export default function App() {
                 element={
                   <RoleGuard allowedRoles={['organizer']}>
                     <Ops />
+                  </RoleGuard>
+                }
+              />
+
+              {/* Ops dashboard: live decision_log view (read-only) */}
+              <Route
+                path="/ops/dashboard"
+                element={
+                  <RoleGuard>
+                    <OpsDashboard />
                   </RoleGuard>
                 }
               />
