@@ -115,7 +115,7 @@ r.post('/events/:id/register', requireAuth(), async (req, res, next) => {
     try {
       await ddb.put({ TableName: INTENTS, Item: {
         intent_id: intentId, event_id: eventId, user_id: userId,
-        status: 'CONFIRMED', position: inflight, ttl: now() + 86400 }});
+        status: 'PENDING', position: inflight, ttl: now() + 86400 }});
     } catch (e) {
       console.warn('[DDB Intent Put Warning]', e.message);
     }
@@ -134,17 +134,21 @@ r.post('/events/:id/register', requireAuth(), async (req, res, next) => {
       }
     }
 
-    // 5. Update PostgreSQL registration record & remaining seats
-    await db.query(
-      `INSERT INTO registrations (event_id, user_id, status)
-       VALUES ($1, $2, 'CONFIRMED')
-       ON CONFLICT DO NOTHING`,
-      [eventId, userId]
-    );
-    await db.query(
-      `UPDATE events SET seats_left = GREATEST(0, seats_left - 1) WHERE id = $1`,
-      [eventId]
-    );
+    // 5. NO SEAT MATH ON THE REQUEST PATH.
+    //
+    // This used to INSERT the registration and decrement seats_left inline.
+    // That bypassed the reconciler entirely: the row already existed by the
+    // time the SQS message arrived, so every message took the ON CONFLICT
+    // branch and logged DUPLICATE_ABSORBED instead of SEAT_GRANTED. Symptoms
+    // were registrations.intent_id NULL and no NOTIFY_SENT ever firing.
+    //
+    // It was also unsafe. `GREATEST(0, seats_left - 1)` floors at zero rather
+    // than refusing, so two concurrent requests for the last seat both passed
+    // the seats_left > 0 check, both inserted, and both decremented - the
+    // overbooking the FIFO single-writer design exists to prevent.
+    //
+    // The seat is now allocated exactly where it should be: by the reconciler,
+    // single-writer per event via MessageGroupId, claim-before-allocate.
 
     logDecision({ actor:'api', action:'INTENT_ACCEPTED', event_id:eventId,
                   correlation_id:intentId, payload:{ inflight, mode } });
@@ -153,8 +157,11 @@ r.post('/events/:id/register', requireAuth(), async (req, res, next) => {
       intent_id: intentId,
       position: inflight,
       mode,
-      status: 'CONFIRMED',
-      message: 'Ticket successfully booked!'
+      // PENDING, not CONFIRMED: at this point the seat has not been allocated
+      // yet. The client polls GET /api/intents/:id for the real outcome, which
+      // the reconciler writes via syncStatus (typically well under a second).
+      status: 'PENDING',
+      message: 'Registration received.'
     });
   } catch (e) { next(e); }
 });
