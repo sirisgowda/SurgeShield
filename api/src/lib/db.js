@@ -46,9 +46,27 @@ export const db = new Pool({
     : { rejectUnauthorized: false },
 });
 
+db.on('connect', () => {
+  console.log('[DATABASE] Client successfully connected to PostgreSQL pool');
+});
+
 db.on('error', (err) => {
   console.error(
     '[DATABASE ERROR] Unexpected idle client error:',
     err.message
   );
 });
+
+// Perform initial connection test
+db.query('SELECT NOW()')
+  .then((res) => {
+    console.log(
+      `[DATABASE] Database connection successful. Server time: ${res.rows[0].now}`
+    );
+  })
+  .catch((err) => {
+    console.error(
+      '[DATABASE ERROR] Failed initial database connection test:',
+      err.message
+    );
+  });
