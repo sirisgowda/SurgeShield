@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRouter from './routes/auth.js';
 import eventsRouter from './routes/events.js';
 import registerRouter from './routes/register.js';
+import invariantsRouter from './routes/ops-invariants.js';
 
 import { db } from './lib/db.js';
 
@@ -35,6 +36,7 @@ app.get('/readyz', async (_req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api', registerRouter);
+app.use('/api/ops', invariantsRouter);
 
 app.use((_req, res) =>
   res.status(404).json({ error: 'NOT_FOUND' })
